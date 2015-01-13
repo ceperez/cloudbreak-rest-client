@@ -16,10 +16,12 @@ class CloudbreakClient {
         USER_CREDENTIALS_EC2("user/credentials", "credentials_ec2.json"),
         USER_CREDENTIALS_AZURE("user/credentials", "credentials_azure.json"),
         USER_CREDENTIALS_GCC("user/credentials", "credentials_gcc.json"),
+        USER_CREDENTIALS_OPENSTACK("user/credentials", "credentials_openstack.json"),
         ACCOUNT_CREDENTIALS("account/credentials", "credentials.json"),
         ACCOUNT_CREDENTIALS_EC2("account/credentials", "credentials_ec2.json"),
         ACCOUNT_CREDENTIALS_AZURE("account/credentials", "credentials_azure.json"),
         ACCOUNT_CREDENTIALS_GCC("account/credentials", "credentials_gcc.json"),
+        ACCOUNT_CREDENTIALS_OPENSTACK("account/credentials", "credentials_openstack.json"),
         GLOBAL_CREDENTIALS("credentials", ""),
         USER_TEMPLATES("user/templates", "template.json"),
         USER_TEMPLATES_EC2("user/templates", "template_ec2.json"),
@@ -136,6 +138,18 @@ class CloudbreakClient {
             response = processPost(Resource.USER_CREDENTIALS_AZURE, binding)
         }
         log.debug("Got response: {}", response.data.id)
+        return response?.data?.id
+    }
+
+    def String postOpenStackCredential(String name, String description, String password, String tenantName, String endpoint, String sshKey, Boolean publicInAccount) throws Exception {
+        log.debug("Posting credential ...")
+        def binding = ["CLOUD_PLATFORM": "OPENSTACK", "NAME": name, "PASSWORD": password, "TENANT_NAME": tenantName, "ENDPOINT": endpoint, "DESCRIPTION": description, "SSHKEY": sshKey]
+        def response;
+        if (publicInAccount) {
+            response = processPost(Resource.ACCOUNT_CREDENTIALS_OPENSTACK, binding)
+        } else {
+            response = processPost(Resource.USER_CREDENTIALS_OPENSTACK, binding)
+        }
         return response?.data?.id
     }
 
